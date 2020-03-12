@@ -29,7 +29,8 @@ module Myob
       end
 
       def get_access_code_url(params = {})
-        @client.auth_code.authorize_url(params.merge(scope: 'CompanyFile', redirect_uri: @redirect_uri))
+        scope = params[:scope] || 'CompanyFile'
+        @client.auth_code.authorize_url(params.merge(scope: scope, redirect_uri: @redirect_uri))
       end
 
       def get_access_token(access_code)
