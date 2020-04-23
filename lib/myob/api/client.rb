@@ -40,6 +40,17 @@ module Myob
         @refresh_token = @token.refresh_token
         @token
       end
+      
+      def refresh_access_token!
+        @token         = OAuth2::AccessToken.new(@client, @access_token, {
+          :refresh_token => @refresh_token
+        }).refresh!
+
+        @access_token  = @token.token
+        @expires_at    = @token.expires_at
+        @refresh_token = @token.refresh_token
+        @token
+      end
 
       def headers
         token = (@current_company_file || {})[:token]
@@ -97,13 +108,7 @@ module Myob
       end
 
       def connection
-        if @refresh_token
-          @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token, {
-            :refresh_token => @refresh_token
-          }).refresh!
-        else
-          @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token)
-        end
+        @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token)
       end
 
       private
