@@ -1,4 +1,4 @@
-Copyright (c) 2013 David Lumley
+Copyright (c) 2020 Van Nguyen
 
 MIT License
 
