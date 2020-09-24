@@ -2,12 +2,11 @@ module MyobAdvanced
   module Api
     module Model
       class Base
-
-        API_URL = 'https://api.myob.com/accountright/' # deprecated except for initial requests - should read from API instead - http://myobapi.tumblr.com/post/141169146113/important-update-accountright-live-cloud-api
         QUERY_OPTIONS = [:orderby, :top, :skip, :filter]
 
         def initialize(client, model_name)
           @client          = client
+          @api_url         = client.api_url
           @model_name      = model_name || 'Base'
           @next_page_link  = nil
         end
@@ -61,12 +60,12 @@ module MyobAdvanced
 
         def url(object = nil, params = nil)
           url = if self.model_route == ''
-            API_URL
+            @api_url
           else
             if @client && @client.current_company_file_url
               "#{@client.current_company_file_url}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
             else
-              "#{API_URL}#{@client.current_company_file[:id]}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
+              "#{@api_url}#{@client.current_company_file[:id]}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
             end
           end
 
@@ -113,7 +112,7 @@ module MyobAdvanced
           if @client && @client.current_company_file_url
             "#{@client.current_company_file_url}/#{self.model_route}"
           else
-            "#{API_URL}#{@client.current_company_file[:id]}/#{self.model_route}"
+            "#{@api_url}#{@client.current_company_file[:id]}/#{self.model_route}"
           end
         end
         

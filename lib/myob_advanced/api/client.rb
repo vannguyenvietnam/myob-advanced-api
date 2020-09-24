@@ -15,11 +15,13 @@ module MyobAdvanced
         @consumer             = options[:consumer]
         @access_token         = options[:access_token]
         @refresh_token        = options[:refresh_token]
+        @api_url              = options[:api_url]
+        @site_url             = options[:site_url]
 
         @client               = OAuth2::Client.new(@consumer[:key], @consumer[:secret], {
-          :site          => 'https://secure.myob.com',
-          :authorize_url => '/oauth2/account/authorize',
-          :token_url     => '/oauth2/v1/authorize',
+          :site          => @site_url,
+          :authorize_url => '/identity/connect/authorize',
+          :token_url     => '/identity/connect/token',
         })
 
         # on client init, if we have a company file already, get the appropriate base URL for this company file from MYOB

@@ -19,12 +19,15 @@ module MyobAdvanced
       def model(model_name)
         method_name = model_name.to_s.underscore
         variable_name = "@#{method_name}_model".to_sym
+
         unless instance_variable_defined?(variable_name)
-          instance_variable_set(variable_name, Myob::Api::Model.const_get("#{model_name}".to_sym).new(self, model_name.to_s))
+          instance_variable_set(variable_name, MyobAdvanced::Api::Model.const_get("#{model_name}".to_sym).new(self, model_name.to_s))
+
           self.define_singleton_method(method_name.to_sym) do
             instance_variable_get(variable_name)
           end
         end
+
         instance_variable_get(variable_name)
       end
     end
