@@ -51,6 +51,7 @@ module MyobAdvanced
 
       def headers
         {
+          'Accept'            => 'application/json',
           'Content-Type'      => 'application/json'
         }
       end

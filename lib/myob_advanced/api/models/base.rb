@@ -2,7 +2,7 @@ module MyobAdvanced
   module Api
     module Model
       class Base
-        QUERY_OPTIONS = [:orderby, :top, :skip, :filter]
+        QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom]
 
         def initialize(client, model_name)
           @client          = client
@@ -20,27 +20,6 @@ module MyobAdvanced
         end
         alias_method :get, :all
 
-        def records(params = nil)
-          response = all(params)
-          response.is_a?(Hash) && response.key?('Items') ? response['Items'] : response
-        end
-        
-        def next_page?
-          !!@next_page_link
-        end
-        
-        def next_page(params = nil)
-          perform_request(@next_page_link)
-        end
-
-        def all_items(params = nil)
-          results = all(params)["Items"]
-          while next_page?
-            results += next_page["Items"] || []
-          end
-          results
-        end
-        
         def find(id)
           object = { 'UID' => id }
           perform_request(self.url(object))
@@ -62,11 +41,7 @@ module MyobAdvanced
           url = if self.model_route == ''
             @api_url
           else
-            if @client && @client.current_company_file_url
-              "#{@client.current_company_file_url}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
-            else
-              "#{@api_url}#{@client.current_company_file[:id]}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
-            end
+            "#{@api_url}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
           end
 
           if params.is_a?(Hash)
@@ -78,18 +53,18 @@ module MyobAdvanced
         end
 
         def new_record?(object)
-          object["UID"].nil? || object["UID"] == ""
+          object['UID'].nil? || object['UID'] == ''
         end
 
         private
         def create(object)
           object = typecast(object)
-          response = @client.connection.post(self.url, {:headers => @client.headers, :body => object.to_json})
+          @client.connection.post(self.url, {:headers => @client.headers, :body => object.to_json})
         end
 
         def update(object)
           object = typecast(object)
-          response = @client.connection.put(self.url(object), {:headers => @client.headers, :body => object.to_json})
+          @client.connection.put(self.url(object), {:headers => @client.headers, :body => object.to_json})
         end
 
         def typecast(object)
@@ -109,17 +84,11 @@ module MyobAdvanced
         end
         
         def resource_url
-          if @client && @client.current_company_file_url
-            "#{@client.current_company_file_url}/#{self.model_route}"
-          else
-            "#{@api_url}#{@client.current_company_file[:id]}/#{self.model_route}"
-          end
+          "#{@api_url}/#{self.model_route}"
         end
         
         def perform_request(url)
-          model_data = parse_response(@client.connection.get(url, {:headers => @client.headers}))
-          @next_page_link = model_data['NextPageLink'] if self.model_route != ''
-          model_data
+          parse_response(@client.connection.get(url, {:headers => @client.headers}))
         end
 
         def query_string(params)
@@ -136,7 +105,7 @@ module MyobAdvanced
         def build_filter(value)
           return value unless value.is_a?(Hash)
 
-          temp = %q(\\\')
+          temp = "\\\\'"
           value.map { |key, value| "#{key} eq '#{value.to_s.gsub("'", temp)}'" }.join(' and ')
         end
 
@@ -148,6 +117,7 @@ module MyobAdvanced
           query.each do |property, value|
             data.select! {|x| x[property] == value}
           end
+          
           data
         end
 
