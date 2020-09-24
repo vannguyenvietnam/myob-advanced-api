@@ -15,14 +15,18 @@ module MyobAdvanced
         @consumer             = options[:consumer]
         @access_token         = options[:access_token]
         @refresh_token        = options[:refresh_token]
-        @api_url              = options[:api_url]
         @site_url             = options[:site_url]
+        @default_version      = options[:default_version] # Default web servive enpoint version
 
         @client               = OAuth2::Client.new(@consumer[:key], @consumer[:secret], {
           :site          => @site_url,
           :authorize_url => '/identity/connect/authorize',
           :token_url     => '/identity/connect/token',
         })
+      end
+
+      def default_api_url
+        "#{@site_url}/entity/Default/#{@default_version}"
       end
 
       def get_access_code_url(params = {})

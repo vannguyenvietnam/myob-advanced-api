@@ -6,7 +6,7 @@ module MyobAdvanced
 
         def initialize(client, model_name)
           @client          = client
-          @api_url         = client.api_url
+          @api_url         = client.default_api_url
           @model_name      = model_name || 'Base'
           @next_page_link  = nil
         end
@@ -117,7 +117,7 @@ module MyobAdvanced
           query.each do |property, value|
             data.select! {|x| x[property] == value}
           end
-          
+
           data
         end
 
