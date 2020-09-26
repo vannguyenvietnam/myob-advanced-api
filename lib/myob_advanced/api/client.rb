@@ -64,6 +64,12 @@ module MyobAdvanced
         @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token)
       end
 
+      def enpoints
+        url = "#{@site_url}/entity"
+        response = connection.get(url, { headers: headers })
+        JSON.parse(response.body)
+      end
+
       private
     end
   end

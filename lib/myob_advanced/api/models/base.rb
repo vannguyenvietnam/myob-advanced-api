@@ -15,13 +15,18 @@ module MyobAdvanced
           @model_name.to_s
         end
 
-        def all(params = nil)
-          perform_request(self.url(nil, params))
+        def all(options = {})
+          perform_request(self.url(nil, options[:params]), options)
         end
         alias_method :get, :all
 
         def find(id)
           object = { 'UID' => id }
+          perform_request(self.url(object))
+        end
+
+        def find_by_path(sub_path)
+          object = { 'sub_path' => sub_path }
           perform_request(self.url(object))
         end
         
@@ -33,15 +38,43 @@ module MyobAdvanced
           new_record?(object) ? create(object) : update(object)
         end
 
-        def destroy(object)
+        def destroy(id)
+          object = { 'UID' => id }
           @client.connection.delete(self.url(object), :headers => @client.headers)
+        end
+
+        def destroy_by_path(sub_path)
+          object = { 'sub_path' => sub_path }
+          @client.connection.delete(self.url(object), :headers => @client.headers)
+        end
+
+        def exec_action(options = {})
+          options[:method] = 'post'
+          perform_request(self.url(nil, options[:params]), options)
+        end
+
+        def put_attach(options = {})
+          options[:method] = 'put'
+          object = nil
+          object = { 'sub_path' => options[:sub_path] } if options[:sub_path]
+          perform_request(self.url(object, options[:params]), options)
+        end
+
+        def get_attach(options = {})
+          object = nil
+          object = { 'sub_path' => options[:sub_path] } if options[:sub_path]
+          perform_request(self.url(object, options[:params]), options)
         end
 
         def url(object = nil, params = nil)
           url = if self.model_route == ''
             @api_url
           else
-            "#{@api_url}/#{self.model_route}#{"/#{object['UID']}" if object && object['UID']}"
+            sub_path = nil
+            sub_path = "/#{object['UID']}" if object && object['UID']
+            sub_path = "/#{object['sub_path']}" if object && object['sub_path']
+            # Init url
+            "#{@api_url}/#{self.model_route}#{sub_path}"
           end
 
           if params.is_a?(Hash)
@@ -59,7 +92,7 @@ module MyobAdvanced
         private
         def create(object)
           object = typecast(object)
-          @client.connection.post(self.url, {:headers => @client.headers, :body => object.to_json})
+          @client.connection.put(self.url, {:headers => @client.headers, :body => object.to_json})
         end
 
         def update(object)
@@ -87,8 +120,11 @@ module MyobAdvanced
           "#{@api_url}/#{self.model_route}"
         end
         
-        def perform_request(url)
-          parse_response(@client.connection.get(url, {:headers => @client.headers}))
+        def perform_request(url, options = {})
+          request_options = { headers: @client.headers }
+          request_options[:body] = options[:body] if options[:body]
+          method = options[:method] || 'get'
+          parse_response(@client.connection.send(method, url, request_options))
         end
 
         def query_string(params)
@@ -120,7 +156,6 @@ module MyobAdvanced
 
           data
         end
-
       end
     end
   end
