@@ -36,8 +36,8 @@ module MyobAdvanced
 
       def get_access_token(access_code)
         @token         = @client.auth_code.get_token(access_code, redirect_uri: @redirect_uri)
-        @access_token  = @token.access_token
-        @expires_at    = @token.expires_in
+        @access_token  = @token.token
+        @expires_at    = @token.expires_at
         @refresh_token = @token.refresh_token
         @token
       end
@@ -47,8 +47,8 @@ module MyobAdvanced
           :refresh_token => @refresh_token
         }).refresh!
 
-        @access_token  = @token.access_token
-        @expires_at    = @token.expires_in
+        @access_token  = @token.token
+        @expires_at    = @token.expires_at
         @refresh_token = @token.refresh_token
         @token
       end
