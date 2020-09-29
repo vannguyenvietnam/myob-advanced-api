@@ -9,14 +9,15 @@ module MyobAdvanced
       attr_reader :client
 
       def initialize(options)
-        MyobAdvanced::Api::Model::Base.subclasses.each {|c| model(c.name.split("::").last)}
-
         @redirect_uri         = options[:redirect_uri]
         @consumer             = options[:consumer]
         @access_token         = options[:access_token]
         @refresh_token        = options[:refresh_token]
         @site_url             = options[:site_url]
         @default_version      = options[:default_version] # Default web servive enpoint version
+
+        # Init model methods
+        MyobAdvanced::Api::Model::Base.subclasses.each {|c| model(c.name.split("::").last)}
 
         @client               = OAuth2::Client.new(@consumer[:key], @consumer[:secret], {
           :site          => @site_url,
