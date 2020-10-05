@@ -3,7 +3,7 @@ module MyobAdvanced
     module Model
       class Invoice < Base
         def model_route
-          'SalesInvoice'
+          'Invoice'
         end
       end
     end
