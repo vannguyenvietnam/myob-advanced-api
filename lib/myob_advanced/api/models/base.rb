@@ -21,7 +21,7 @@ module MyobAdvanced
         alias_method :get, :all
 
         def find(id)
-          object = { 'UID' => id }
+          object = { 'ID' => id }
           perform_request(self.url(object))
         end
 
@@ -39,7 +39,7 @@ module MyobAdvanced
         end
 
         def destroy(id)
-          object = { 'UID' => id }
+          object = { 'ID' => id }
           @client.connection.delete(self.url(object), :headers => @client.headers)
         end
 
@@ -71,7 +71,7 @@ module MyobAdvanced
             @api_url
           else
             sub_path = nil
-            sub_path = "/#{object['UID']}" if object && object['UID']
+            sub_path = "/#{object['ID']}" if object && object['ID']
             sub_path = "/#{object['sub_path']}" if object && object['sub_path']
             # Init url
             "#{@api_url}/#{self.model_route}#{sub_path}"
@@ -86,7 +86,7 @@ module MyobAdvanced
         end
 
         def new_record?(object)
-          object['UID'].nil? || object['UID'] == ''
+          object['ID'].nil? || object['ID'] == ''
         end
 
         private
