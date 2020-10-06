@@ -20,18 +20,18 @@ module MyobAdvanced
         end
         alias_method :get, :all
 
-        def find(id)
+        def find(id, options = {})
           object = { 'ID' => id }
-          perform_request(self.url(object))
+          perform_request(self.url(object, options[:params]), options)
         end
 
-        def find_by_path(sub_path)
+        def find_by_path(sub_path, options = {})
           object = { 'sub_path' => sub_path }
-          perform_request(self.url(object))
+          perform_request(self.url(object, options[:params]), options)
         end
         
-        def first(params = nil)
-          all(params).first
+        def first(options = {})
+          all(options).first
         end
 
         def save(object)
