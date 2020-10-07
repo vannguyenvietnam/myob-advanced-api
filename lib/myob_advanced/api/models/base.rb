@@ -34,10 +34,6 @@ module MyobAdvanced
           all(options).first
         end
 
-        def save(object)
-          new_record?(object) ? create(object) : update(object)
-        end
-
         def destroy(id)
           object = { 'ID' => id }
           @client.connection.delete(self.url(object), :headers => @client.headers)
@@ -66,6 +62,18 @@ module MyobAdvanced
           perform_request(self.url(object, options[:params]), options)
         end
 
+        def create(object, options = {})
+          object = typecast(object)
+          request_options = { body: object, method: 'put' }
+          perform_request(self.url(nil, options[:params]), request_options)
+        end
+
+        def update(object, options = {})
+          object = typecast(object)
+          request_options = { body: object, method: 'put' }
+          perform_request(self.url(nil, options[:params]), request_options)
+        end
+
         def url(object = nil, params = nil)
           url = if self.model_route == ''
             @api_url
@@ -85,20 +93,7 @@ module MyobAdvanced
           url
         end
 
-        def new_record?(object)
-          object['ID'].nil? || object['ID'] == ''
-        end
-
         private
-        def create(object)
-          object = typecast(object)
-          @client.connection.put(self.url, {:headers => @client.headers, :body => object.to_json})
-        end
-
-        def update(object)
-          object = typecast(object)
-          @client.connection.put(self.url(object), {:headers => @client.headers, :body => object.to_json})
-        end
 
         def typecast(object)
           returned_object = object.dup # don't change the original object
@@ -122,7 +117,7 @@ module MyobAdvanced
         
         def perform_request(url, options = {})
           request_options = { headers: @client.headers }
-          request_options[:body] = options[:body] if options[:body]
+          request_options[:body] = options[:body].to_json if options[:body]
           method = options[:method] || 'get'
           parse_response(@client.connection.send(method, url, request_options))
         end
