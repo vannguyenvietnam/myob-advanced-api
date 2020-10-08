@@ -8,7 +8,6 @@ module MyobAdvanced
           @client          = client
           @api_url         = client.default_api_url
           @model_name      = model_name || 'Base'
-          @next_page_link  = nil
         end
 
         def model_route
@@ -75,14 +74,15 @@ module MyobAdvanced
         end
 
         def url(object = nil, params = nil)
-          url = if self.model_route == ''
-            @api_url
-          else
+          @model_route ||= model_route
+          url =  @api_url
+
+          if @model_route.present?
             sub_path = nil
             sub_path = "/#{object['ID']}" if object && object['ID']
             sub_path = "/#{object['sub_path']}" if object && object['sub_path']
             # Init url
-            "#{@api_url}/#{self.model_route}#{sub_path}"
+            url = "#{@api_url}/#{@model_route}#{sub_path}"
           end
 
           if params.is_a?(Hash)

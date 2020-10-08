@@ -30,6 +30,10 @@ module MyobAdvanced
         "#{@site_url}/entity/Default/#{@default_version}"
       end
 
+      def site_url
+        @site_url
+      end
+
       def get_access_code_url(params = {})
         scope = params[:scope] || 'api offline_access'
         @client.auth_code.authorize_url(params.merge(scope: scope, redirect_uri: @redirect_uri))

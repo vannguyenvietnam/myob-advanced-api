@@ -2,6 +2,7 @@ require 'myob_advanced/api/version'
 require 'myob_advanced/api/helpers'
 
 require 'myob_advanced/api/models/base'
+require 'myob_advanced/api/models/custom'
 
 require 'myob_advanced/api/models/account'
 
