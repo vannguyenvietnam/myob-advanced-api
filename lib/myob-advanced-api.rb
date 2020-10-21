@@ -13,5 +13,6 @@ require 'myob_advanced/api/models/customer_payment_method'
 
 require 'myob_advanced/api/models/invoice'
 require 'myob_advanced/api/models/sales_invoice'
+require 'myob_advanced/api/models/payment'
 
 require 'myob_advanced/api/client'
