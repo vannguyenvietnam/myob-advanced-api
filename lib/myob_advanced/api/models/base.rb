@@ -142,7 +142,9 @@ module MyobAdvanced
         end
 
         def parse_response(response)
-          JSON.parse(response.body)
+          return response.body unless response.body.present?
+
+          JSON.parse(response.body) rescue {}
         end
 
         def process_query(data, query)
