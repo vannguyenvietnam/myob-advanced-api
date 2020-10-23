@@ -43,9 +43,10 @@ module MyobAdvanced
           @client.connection.delete(self.url(object), :headers => @client.headers)
         end
 
-        def exec_action(options = {})
+        def exec_action(action, options = {})
           options[:method] = 'post'
-          perform_request(self.url(nil, options[:params]), options)
+          object = { 'sub_path' => action }
+          perform_request(self.url(object, options[:params]), options)
         end
 
         def put_attach(options = {})
