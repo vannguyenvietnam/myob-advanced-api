@@ -5,7 +5,7 @@ require 'myob_advanced/api/models/base'
 require 'myob_advanced/api/models/custom'
 
 require 'myob_advanced/api/models/account'
-equire 'myob_advanced/api/models/payment_method'
+require 'myob_advanced/api/models/payment_method'
 
 require 'myob_advanced/api/models/customer'
 require 'myob_advanced/api/models/customer_class'
