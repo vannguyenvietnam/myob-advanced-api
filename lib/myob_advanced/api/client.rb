@@ -11,6 +11,7 @@ module MyobAdvanced
       def initialize(options)
         @redirect_uri         = options[:redirect_uri]
         @consumer             = options[:consumer]
+        @access_user          = options[:access_user]
         @access_token         = options[:access_token]
         @refresh_token        = options[:refresh_token]
         @site_url             = options[:site_url]
@@ -41,6 +42,15 @@ module MyobAdvanced
 
       def get_access_token(access_code)
         @token         = @client.auth_code.get_token(access_code, redirect_uri: @redirect_uri)
+        @access_token  = @token.token
+        @expires_at    = @token.expires_at
+        @refresh_token = @token.refresh_token
+        @token
+      end
+
+      def get_access_token_password_grant_type
+        params = { scope: 'api offline_access' }
+        @token         = @client.password.get_token(@access_user[:username], @access_user[:password], params)
         @access_token  = @token.token
         @expires_at    = @token.expires_at
         @refresh_token = @token.refresh_token
