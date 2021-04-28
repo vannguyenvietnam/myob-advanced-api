@@ -17,6 +17,7 @@ module MyobAdvanced
         @site_url             = options[:site_url]
         @default_version      = options[:default_version] # Default web servive enpoint version
 
+        @site_url = @site_url.to_s.gsub(/\/*$/, '')
         # Init model methods
         MyobAdvanced::Api::Model::Base.subclasses.each {|c| model(c.name.split("::").last)}
 
