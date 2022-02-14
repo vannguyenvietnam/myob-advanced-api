@@ -9,6 +9,7 @@ require 'myob_advanced/api/models/payment_method'
 
 require 'myob_advanced/api/models/customer'
 require 'myob_advanced/api/models/customer_class'
+require 'myob_advanced/api/models/customer_location'
 require 'myob_advanced/api/models/contact'
 require 'myob_advanced/api/models/customer_payment_method'
 
