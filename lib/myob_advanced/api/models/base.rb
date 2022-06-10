@@ -51,6 +51,7 @@ module MyobAdvanced
 
         def put_attach(options = {})
           options[:method] = 'put'
+          options[:attachment] = true
           object = nil
           object = { 'sub_path' => options[:sub_path] } if options[:sub_path]
           perform_request(self.url(object, options[:params]), options)
@@ -117,7 +118,8 @@ module MyobAdvanced
         end
         
         def perform_request(url, options = {})
-          request_options = { headers: @client.headers }
+          headers = options[:attachment] ?  @client.attachment_headers : @client.headers
+          request_options = { headers: headers }
           request_options[:body] = options[:body].to_json if options[:body]
           method = options[:method] || 'get'
           parse_response(@client.connection.send(method, url, request_options))

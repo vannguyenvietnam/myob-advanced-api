@@ -76,6 +76,13 @@ module MyobAdvanced
         }
       end
 
+      def attachment_headers
+        {
+          'Accept'            => 'application/json',
+          'Content-Type'      => 'application/octet-stream'
+        }
+      end
+
       def connection
         @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token)
       end
