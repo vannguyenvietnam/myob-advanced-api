@@ -69,17 +69,24 @@ module MyobAdvanced
         @token
       end
 
-      def headers
+      def headers(options = {})
+        if options[:attachment]
+          result = {
+            'Accept'            => 'application/octet-stream',
+            'Content-Type'      => 'application/json'
+          }
+
+          return result unless options[:method] == 'put'
+
+          return {
+            'Accept'            => 'application/json',
+            'Content-Type'      => 'application/octet-stream'
+          }
+        end
+
         {
           'Accept'            => 'application/json',
           'Content-Type'      => 'application/json'
-        }
-      end
-
-      def attachment_headers
-        {
-          'Accept'            => 'application/json',
-          'Content-Type'      => 'application/octet-stream'
         }
       end
 
