@@ -16,6 +16,7 @@ module MyobAdvanced
         @refresh_token        = options[:refresh_token]
         @site_url             = options[:site_url]
         @default_version      = options[:default_version] # Default web servive enpoint version
+        @header               = options[:header]
 
         @site_url = @site_url.to_s.gsub(/\/*$/, '')
         # Init model methods
@@ -70,23 +71,26 @@ module MyobAdvanced
       end
 
       def headers(options = {})
-        if options[:attachment]
-          result = {
-            'Accept'            => 'application/octet-stream',
-            'Content-Type'      => 'application/json'
-          }
+        result = {
+          'Accept'            => 'application/json',
+          'Content-Type'      => 'application/json',
+          'Cookie'            => @header[:cookie]
+        }
 
-          return result unless options[:method] == 'put'
+        return result unless options[:attachment]
 
-          return {
-            'Accept'            => 'application/json',
-            'Content-Type'      => 'application/octet-stream'
-          }
-        end
+        result = {
+          'Accept'            => 'application/octet-stream',
+          'Content-Type'      => 'application/json',
+          'Cookie'            => @header[:cookie]
+        }
+
+        return result unless options[:method] == 'put'
 
         {
           'Accept'            => 'application/json',
-          'Content-Type'      => 'application/json'
+          'Content-Type'      => 'application/octet-stream',
+          'Cookie'            => @header[:cookie]
         }
       end
 
