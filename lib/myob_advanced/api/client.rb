@@ -8,6 +8,29 @@ module MyobAdvanced
 
       attr_reader :client
 
+      SERVICE_TYPES = {
+        restful_api: {
+          name: 'RESTful API',
+          value: 'RESTFUL_API'
+        },
+        odata_v3: {
+          name: 'OData V3',
+          value: 'ODATA_V3'
+        },
+        odata_v4: {
+          name: 'OData V4',
+          value: 'ODATA_V4'
+        },
+        odata_gi: {
+          name: 'OData - Generic Inquiry',
+          value: 'ODATA_GI'
+        },
+        odata_dac: {
+          name: 'OData - Data Access Classes',
+          value: 'ODATA_DAC'
+        }
+      }.freeze
+
       def initialize(options)
         @redirect_uri         = options[:redirect_uri]
         @consumer             = options[:consumer]
@@ -17,6 +40,10 @@ module MyobAdvanced
         @site_url             = options[:site_url]
         @default_version      = options[:default_version] # Default web servive enpoint version
         @header               = options[:header]
+        @tenant               = options[:tenant]
+        # RESTFUL_API || ODATA_V3 || ODATA_V4 || ODATA_GI || ODATA_DAC
+        # Default is RESTFUL_API
+        @service_type         = options[:service_type] || self.class::SERVICE_TYPES[:restful_api][:value]
 
         @site_url = @site_url.to_s.gsub(/\/*$/, '')
         # Init model methods
@@ -30,7 +57,40 @@ module MyobAdvanced
       end
 
       def default_api_url
+        case @service_type
+        when self.class::SERVICE_TYPES[:odata_v3][:value]
+          result = odata_v3_url
+        when self.class::SERVICE_TYPES[:odata_v4][:value]
+          result = odata_v4_url
+        when self.class::SERVICE_TYPES[:odata_gi][:value]
+          result = odata_gi_url
+        when self.class::SERVICE_TYPES[:odata_dac][:value]
+          result = odata_dac_url
+        else # RESTFUL_API
+          result = restful_api_url
+        end
+
+        result
+      end
+
+      def restful_api_url
         "#{@site_url}/entity/Default/#{@default_version}"
+      end
+
+      def odata_v3_url
+        "#{@site_url}/odata/#{@tenant}"
+      end
+
+      def odata_v4_url
+        "#{@site_url}/odatav4/#{@tenant}"
+      end
+
+      def odata_gi_url
+        "#{@site_url}/t/#{@tenant}/api/odata/gi"
+      end
+
+      def odata_dac_url
+        "#{@site_url}/t/#{@tenant}/api/odata/dac"
       end
 
       def site_url
@@ -58,7 +118,7 @@ module MyobAdvanced
         @refresh_token = @token.refresh_token
         @token
       end
-      
+
       def refresh_access_token!
         @token         = OAuth2::AccessToken.new(@client, @access_token, {
           :refresh_token => @refresh_token
@@ -98,10 +158,30 @@ module MyobAdvanced
         @auth_connection ||= OAuth2::AccessToken.new(@client, @access_token)
       end
 
-      def enpoints
+      def endpoints
         url = "#{@site_url}/entity"
         response = connection.get(url, { headers: headers })
         JSON.parse(response.body)
+      end
+
+      # Return XML
+      def metadata
+        url "#{default_api_url}/$metadata"
+        response = connection.get(url, { headers: headers })
+        Nokogiri::XML(response.body)
+      end
+
+      def restful_api?
+        @service_type == self.class::SERVICE_TYPES[:restful_api][:value]
+      end
+
+      def odata?
+        [
+          self.class::SERVICE_TYPES[:odata_v3][:value],
+          self.class::SERVICE_TYPES[:odata_v4][:value],
+          self.class::SERVICE_TYPES[:odata_gi][:value],
+          self.class::SERVICE_TYPES[:odata_dac][:value]
+        ].include?(@service_type)
       end
 
       private

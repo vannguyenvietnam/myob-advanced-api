@@ -28,7 +28,7 @@ module MyobAdvanced
           object = { 'sub_path' => sub_path }
           perform_request(self.url(object, options[:params]), options)
         end
-        
+
         def first(options = {})
           all(options).first
         end
@@ -78,14 +78,19 @@ module MyobAdvanced
 
         def url(object = nil, params = nil)
           @model_route ||= model_route
-          url =  @api_url
+          url = @api_url
 
+          # Default RESTful API URL
           if @model_route.present?
             sub_path = nil
             sub_path = "/#{object['ID']}" if object && object['ID']
             sub_path = "/#{object['sub_path']}" if object && object['sub_path']
             # Init url
             url = "#{@api_url}/#{@model_route}#{sub_path}"
+          end
+
+          if @client.odata?
+            url = "#{@api_url}/#{@model_route}"
           end
 
           if params.is_a?(Hash)
@@ -113,11 +118,11 @@ module MyobAdvanced
         def date_formatter
           "%Y-%m-%dT%H:%M:%S"
         end
-        
+
         def resource_url
           "#{@api_url}/#{self.model_route}"
         end
-        
+
         def perform_request(url, options = {})
           headers = @client.headers(options)
           request_options = { headers: headers }

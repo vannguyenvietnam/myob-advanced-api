@@ -22,4 +22,7 @@ require 'myob_advanced/api/models/vendor_class'
 require 'myob_advanced/api/models/bill'
 require 'myob_advanced/api/models/check'
 
+# DACs
+require 'myob_advanced/api/models/px_objects_ar_customer'
+
 require 'myob_advanced/api/client'
