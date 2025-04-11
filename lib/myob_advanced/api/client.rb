@@ -47,13 +47,21 @@ module MyobAdvanced
 
         @site_url = @site_url.to_s.gsub(/\/*$/, '')
         # Init model methods
-        MyobAdvanced::Api::Model::Base.subclasses.each {|c| model(c.name.split("::").last)}
+        MyobAdvanced::Api::Model::Base.subclasses.each { |c| model(c.name.split('::').last) }
 
-        @client               = OAuth2::Client.new(@consumer[:key], @consumer[:secret], {
-          :site          => @site_url,
-          :authorize_url => '/identity/connect/authorize',
-          :token_url     => '/identity/connect/token',
-        })
+        @client = OAuth2::Client.new(
+          @consumer[:key],
+          @consumer[:secret],
+          {
+            site: @site_url,
+            authorize_url: '/identity/connect/authorize',
+            token_url: '/identity/connect/token'
+          }
+        )
+
+        # # Configure Faraday connection with custom timeouts
+        # @client.connection.options[:timeout] = 60 * 5 # read timeout in seconds
+        # @client.connection.options[:open_timeout] = 60 * 3 # open timeout in seconds
       end
 
       def default_api_url
@@ -160,13 +168,15 @@ module MyobAdvanced
 
       def endpoints
         url = "#{@site_url}/entity"
+        puts "Started GET \"#{url}\" at #{Time.zone.now}"
         response = connection.get(url, { headers: headers })
         JSON.parse(response.body)
       end
 
       # Return XML
       def metadata
-        url "#{default_api_url}/$metadata"
+        url = "#{default_api_url}/$metadata"
+        puts "Started GET \"#{url}\" at #{Time.zone.now}"
         response = connection.get(url, { headers: headers })
         Nokogiri::XML(response.body)
       end

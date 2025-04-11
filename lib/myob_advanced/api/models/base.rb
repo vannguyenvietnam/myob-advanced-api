@@ -2,7 +2,7 @@ module MyobAdvanced
   module Api
     module Model
       class Base
-        QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom]
+        QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom, :count]
 
         def initialize(client, model_name)
           @client          = client
@@ -129,6 +129,7 @@ module MyobAdvanced
           request_options[:body] = options[:body] if options[:body]
           request_options[:body] = request_options[:body].to_json if request_options[:body].is_a?(Hash)
           method = options[:method] || 'get'
+          puts "Started #{method.upcase} \"#{url}\" at #{Time.zone.now}"
           parse_response(@client.connection.send(method, url, request_options))
         end
 
