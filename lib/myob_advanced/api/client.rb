@@ -32,18 +32,20 @@ module MyobAdvanced
       }.freeze
 
       def initialize(options)
-        @redirect_uri         = options[:redirect_uri]
-        @consumer             = options[:consumer]
-        @access_user          = options[:access_user]
-        @access_token         = options[:access_token]
-        @refresh_token        = options[:refresh_token]
-        @site_url             = options[:site_url]
-        @default_version      = options[:default_version] # Default web servive enpoint version
-        @header               = options[:header]
-        @tenant               = options[:tenant]
+        @redirect_uri = options[:redirect_uri]
+        @consumer = options[:consumer]
+        @access_user = options[:access_user]
+        @access_token = options[:access_token]
+        @refresh_token = options[:refresh_token]
+        @site_url = options[:site_url]
+        @default_version = options[:default_version] # Default web servive enpoint version
+        @header = options[:header]
+        @tenant = options[:tenant]
+        @timeout = options[:timeout]
+        @open_timeout = options[:open_timeout]
         # RESTFUL_API || ODATA_V3 || ODATA_V4 || ODATA_GI || ODATA_DAC
         # Default is RESTFUL_API
-        @service_type         = options[:service_type] || self.class::SERVICE_TYPES[:restful_api][:value]
+        @service_type = options[:service_type] || self.class::SERVICE_TYPES[:restful_api][:value]
 
         @site_url = @site_url.to_s.gsub(/\/*$/, '')
         # Init model methods
@@ -59,9 +61,11 @@ module MyobAdvanced
           }
         )
 
-        # # Configure Faraday connection with custom timeouts
-        # @client.connection.options[:timeout] = 60 * 5 # read timeout in seconds
-        # @client.connection.options[:open_timeout] = 60 * 3 # open timeout in seconds
+        # Configure Faraday connection with custom timeouts
+        # read timeout in seconds
+        @client.connection.options[:timeout] = @timeout.to_i if @timeout.present?
+        # open timeout in seconds
+        @client.connection.options[:open_timeout] = @open_timeout.to_i if @open_timeout.present?
       end
 
       def default_api_url
