@@ -5,6 +5,14 @@ module MyobAdvanced
         def model_route
           'PX_Objects_AR_ARInvoice'
         end
+
+        def self.field_id
+          'RefNbr'
+        end
+
+        def self.dac?
+          true
+        end
       end
     end
   end

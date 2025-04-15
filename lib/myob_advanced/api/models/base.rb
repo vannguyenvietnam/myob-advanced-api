@@ -5,9 +5,17 @@ module MyobAdvanced
         QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom, :count]
 
         def initialize(client, model_name)
-          @client          = client
-          @api_url         = client.default_api_url
-          @model_name      = model_name || 'Base'
+          @client = client
+          @api_url = client.default_api_url
+          @model_name = model_name || 'Base'
+        end
+
+        def self.field_id
+          'ID'
+        end
+
+        def self.dac?
+          false
         end
 
         def model_route
@@ -89,9 +97,7 @@ module MyobAdvanced
             url = "#{@api_url}/#{@model_route}#{sub_path}"
           end
 
-          if @client.odata?
-            url = "#{@api_url}/#{@model_route}"
-          end
+          url = "#{@api_url}/#{@model_route}" if @client.odata?
 
           if params.is_a?(Hash)
             query = query_string(params)
@@ -148,7 +154,7 @@ module MyobAdvanced
           return value unless value.is_a?(Hash)
 
           temp = "\\\\'"
-          value.map { |key, value| "#{key} eq '#{value.to_s.gsub("'", temp)}'" }.join(' and ')
+          value.map { |key, v| "#{key} eq '#{v.to_s.gsub("'", temp)}'" }.join(' and ')
         end
 
         def parse_response(response)
@@ -159,7 +165,7 @@ module MyobAdvanced
 
         def process_query(data, query)
           query.each do |property, value|
-            data.select! {|x| x[property] == value}
+            data.select! { |x| x[property] == value }
           end
 
           data

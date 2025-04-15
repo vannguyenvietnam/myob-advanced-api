@@ -186,7 +186,7 @@ module MyobAdvanced
       end
 
       def restful_api?
-        @service_type == self.class::SERVICE_TYPES[:restful_api][:value]
+        @service_type.blank? || @service_type == self.class::SERVICE_TYPES[:restful_api][:value]
       end
 
       def odata?
