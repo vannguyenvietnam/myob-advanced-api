@@ -97,7 +97,10 @@ module MyobAdvanced
             url = "#{@api_url}/#{@model_route}#{sub_path}"
           end
 
-          url = "#{@api_url}/#{@model_route}" if @client.odata?
+          if @client.odata?
+            url = "#{@api_url}/#{@model_route}"
+            params[:filter] = "#{self.class.field_id} eq '#{object['ID']}'" if object && object['ID']
+          end
 
           if params.is_a?(Hash)
             query = query_string(params)
