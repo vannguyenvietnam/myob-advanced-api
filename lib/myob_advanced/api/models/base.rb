@@ -93,7 +93,7 @@ module MyobAdvanced
             url += "?#{query}" if !query.nil? && query.length > 0
           end
 
-          url
+          ERB::Util.url_encode(url)
         end
 
         private
