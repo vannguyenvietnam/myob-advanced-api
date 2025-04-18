@@ -94,7 +94,7 @@ module MyobAdvanced
             sub_path = "/#{object['ID']}" if object && object['ID']
             sub_path = "/#{object['sub_path']}" if object && object['sub_path']
             # Init url
-            url = "#{@api_url}/#{@model_route}#{sub_path}"
+            url = "#{@api_url}/#{@model_route}#{ERB::Util.url_encode(sub_path)}"
           end
 
           if @client.odata?
