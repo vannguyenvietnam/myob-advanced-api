@@ -14,6 +14,10 @@ module MyobAdvanced
           'ID'
         end
 
+        def self.field_name
+          'Name'
+        end
+
         def self.dac?
           false
         end

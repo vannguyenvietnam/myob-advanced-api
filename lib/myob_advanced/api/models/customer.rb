@@ -9,6 +9,10 @@ module MyobAdvanced
         def self.field_id
           'CustomerID'
         end
+
+        def self.field_name
+          'CustomerName'
+        end
       end
     end
   end

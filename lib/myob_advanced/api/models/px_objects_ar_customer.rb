@@ -10,6 +10,10 @@ module MyobAdvanced
           'AcctCD'
         end
 
+        def self.field_name
+          'AcctName'
+        end
+
         def self.dac?
           true
         end
