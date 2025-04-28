@@ -1,11 +1,11 @@
 module MyobAdvanced
-    module Api
-      module Model
-        class Vendor < Base
-          def model_route
-            'Vendor'
-          end
+  module Api
+    module Model
+      class Vendor < Base
+        def model_route
+          'Vendor'
         end
       end
     end
   end
+end
