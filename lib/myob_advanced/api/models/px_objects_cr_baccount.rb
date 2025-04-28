@@ -1,17 +1,17 @@
 module MyobAdvanced
   module Api
     module Model
-      class Customer < Base
+      class PxObjectsCrBaccount < Base
         def model_route
-          'Customer'
+          'PX_Objects_CR_BAccount'
         end
 
         def self.field_id
-          'CustomerID'
+          'BAccountID'
         end
 
-        def self.field_name
-          'CustomerName'
+        def self.dac?
+          true
         end
       end
     end

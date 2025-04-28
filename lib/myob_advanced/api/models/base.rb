@@ -2,12 +2,24 @@ module MyobAdvanced
   module Api
     module Model
       class Base
-        QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom]
+        QUERY_OPTIONS = [:top, :skip, :filter, :expand, :select, :custom, :count]
 
         def initialize(client, model_name)
-          @client          = client
-          @api_url         = client.default_api_url
-          @model_name      = model_name || 'Base'
+          @client = client
+          @api_url = client.default_api_url
+          @model_name = model_name || 'Base'
+        end
+
+        def self.field_id
+          'ID'
+        end
+
+        def self.field_name
+          'Name'
+        end
+
+        def self.dac?
+          false
         end
 
         def model_route
@@ -28,7 +40,7 @@ module MyobAdvanced
           object = { 'sub_path' => sub_path }
           perform_request(self.url(object, options[:params]), options)
         end
-        
+
         def first(options = {})
           all(options).first
         end
@@ -78,14 +90,20 @@ module MyobAdvanced
 
         def url(object = nil, params = nil)
           @model_route ||= model_route
-          url =  @api_url
+          url = @api_url
 
+          # Default RESTful API URL
           if @model_route.present?
             sub_path = nil
             sub_path = "/#{object['ID']}" if object && object['ID']
             sub_path = "/#{object['sub_path']}" if object && object['sub_path']
             # Init url
             url = "#{@api_url}/#{@model_route}#{ERB::Util.url_encode(sub_path)}"
+          end
+
+          if @client.odata?
+            url = "#{@api_url}/#{@model_route}"
+            params[:filter] = "#{self.class.field_id} eq '#{object['ID']}'" if object && object['ID']
           end
 
           if params.is_a?(Hash)
@@ -113,17 +131,18 @@ module MyobAdvanced
         def date_formatter
           "%Y-%m-%dT%H:%M:%S"
         end
-        
+
         def resource_url
           "#{@api_url}/#{self.model_route}"
         end
-        
+
         def perform_request(url, options = {})
           headers = @client.headers(options)
           request_options = { headers: headers }
           request_options[:body] = options[:body] if options[:body]
           request_options[:body] = request_options[:body].to_json if request_options[:body].is_a?(Hash)
           method = options[:method] || 'get'
+          puts "Started #{method.upcase} \"#{url}\" at #{Time.zone.now}"
           parse_response(@client.connection.send(method, url, request_options))
         end
 
@@ -142,7 +161,7 @@ module MyobAdvanced
           return value unless value.is_a?(Hash)
 
           temp = "\\\\'"
-          value.map { |key, value| "#{key} eq '#{value.to_s.gsub("'", temp)}'" }.join(' and ')
+          value.map { |key, v| "#{key} eq '#{v.to_s.gsub("'", temp)}'" }.join(' and ')
         end
 
         def parse_response(response)
@@ -153,7 +172,7 @@ module MyobAdvanced
 
         def process_query(data, query)
           query.each do |property, value|
-            data.select! {|x| x[property] == value}
+            data.select! { |x| x[property] == value }
           end
 
           data
