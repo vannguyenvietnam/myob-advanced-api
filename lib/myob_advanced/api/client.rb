@@ -90,19 +90,19 @@ module MyobAdvanced
       end
 
       def odata_v3_url
-        "#{@site_url}/odata/#{@tenant}"
+        "#{@site_url}/odata/#{ERB::Util.url_encode(@tenant)}"
       end
 
       def odata_v4_url
-        "#{@site_url}/odatav4/#{@tenant}"
+        "#{@site_url}/odatav4/#{ERB::Util.url_encode(@tenant)}"
       end
 
       def odata_gi_url
-        "#{@site_url}/t/#{@tenant}/api/odata/gi"
+        "#{@site_url}/t/#{ERB::Util.url_encode(@tenant)}/api/odata/gi"
       end
 
       def odata_dac_url
-        "#{@site_url}/t/#{@tenant}/api/odata/dac"
+        "#{@site_url}/t/#{ERB::Util.url_encode(@tenant)}/api/odata/dac"
       end
 
       def site_url
