@@ -27,6 +27,7 @@ require 'myob_advanced/api/models/px_objects_ar_arinvoice'
 require 'myob_advanced/api/models/px_objects_ar_customer'
 require 'myob_advanced/api/models/px_objects_cr_baccount'
 require 'myob_advanced/api/models/px_objects_cr_contact'
+require 'myob_advanced/api/models/px_objects_cr_location'
 require 'myob_advanced/api/models/px_objects_cs_terms'
 require 'myob_advanced/api/models/px_objects_gl_account'
 
