@@ -14,6 +14,10 @@ module MyobAdvanced
           'AcctName'
         end
 
+        def self.field_note_id
+          'NoteID'
+        end
+
         def self.dac?
           true
         end
