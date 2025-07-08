@@ -38,7 +38,7 @@ module MyobAdvanced
         @access_token = options[:access_token]
         @refresh_token = options[:refresh_token]
         @site_url = options[:site_url]
-        @default_version = options[:default_version] # Default web servive enpoint version
+        @default_version = options[:default_version] # Default web service endpoint version
         @header = options[:header]
         @tenant = options[:tenant]
         @timeout = options[:timeout]
