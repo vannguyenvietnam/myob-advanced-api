@@ -103,7 +103,7 @@ module MyobAdvanced
 
           if @client.odata?
             url = "#{@api_url}/#{@model_route}"
-            params[:filter] = "#{self.class.field_note_id} eq #{object['ID']}" if object && object['ID']
+            params[:filter] = "#{self.class.field_note_id(@model_name)} eq '#{object['ID']}'" if object && object['ID']
           end
 
           if params.is_a?(Hash)
@@ -115,8 +115,11 @@ module MyobAdvanced
         end
 
         # Default field
-        def self.field_note_id
-          'ID'
+        # model_name is used for custom case
+        def self.field_note_id(model_name = nil)
+          result = 'ID'
+          result = MyobAdvanced::Api::Model.const_get(model_name).field_note_id if model_name.present?
+          result
         end
 
         private
