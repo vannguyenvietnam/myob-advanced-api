@@ -103,7 +103,12 @@ module MyobAdvanced
 
           if @client.odata?
             url = "#{@api_url}/#{@model_route}"
-            params[:filter] = "#{self.class.field_note_id(@model_name)} eq '#{object['ID']}'" if object && object['ID']
+
+            if object && object['ID']
+              field_name = self.class.field_note_id(@model_name)
+              params[:filter] = "#{field_name} eq '#{object['ID']}'"
+              params[:filter] = "#{field_name} eq #{object['ID']}" if field_name == 'NoteID'
+            end
           end
 
           if params.is_a?(Hash)
