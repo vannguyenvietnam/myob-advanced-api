@@ -14,7 +14,7 @@ module MyobAdvanced
           'LocationCD'
         end
 
-        def self.field_note_id
+        def self.field_note_id(model_name = nil)
           'NoteID'
         end
 
