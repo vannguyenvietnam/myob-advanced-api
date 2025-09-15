@@ -25,6 +25,7 @@ require 'myob_advanced/api/models/check'
 # DACs
 require 'myob_advanced/api/models/px_objects_ap_apinvoice'
 require 'myob_advanced/api/models/px_objects_ap_appayment'
+require 'myob_advanced/api/models/px_objects_ar_aradjust'
 require 'myob_advanced/api/models/px_objects_ar_arinvoice'
 require 'myob_advanced/api/models/px_objects_ar_arpayment'
 require 'myob_advanced/api/models/px_objects_ar_customer'
