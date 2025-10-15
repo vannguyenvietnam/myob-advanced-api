@@ -35,5 +35,6 @@ require 'myob_advanced/api/models/px_objects_cr_contact'
 require 'myob_advanced/api/models/px_objects_cr_location'
 require 'myob_advanced/api/models/px_objects_cs_terms'
 require 'myob_advanced/api/models/px_objects_gl_account'
+require 'myob_advanced/api/models/px_objects_so_soorder'
 
 require 'myob_advanced/api/client'
